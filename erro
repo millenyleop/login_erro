@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /* Reset de estilos globais */
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: 'poppins', sans-serif;
+      }
+  
+      /* Estilizando a seção principal */
+      section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        width: 100%;
+        background: url('https://img.freepik.com/fotos-gratis/retrato-de-enfermeira-no-hospital_23-2150780304.jpg?size=626&ext=jpg') no-repeat;
+        background-position: center;
+        background-size: cover;
+      }
+  
+      /* Estilizando a caixa de formulário */
+      .form-box {
+        position: relative;
+        width: 400px;
+        height: 450px;
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+  
+      /* Estilizando o título h2 */
+      h2 {
+        font-size: 2em;
+        color: #fff;
+        text-align: center;
+      }
+  
+      /* Estilizando a caixa de entrada */
+      .inputbox {
+        position: relative;
+        margin: 30px 0;
+        width: 310px;
+        border-bottom: 2px solid #fff;
+      }
+  
+      /* Estilizando a etiqueta dentro da caixa de entrada */
+      .inputbox label {
+        position: absolute;
+        top: 50%;
+        left: 5px;
+        transform: translateY(-50%);
+        color: #fff;
+        font-size: 1em;
+        pointer-events: none;
+        transition: 0.5s;
+      }
+  
+      /* Alterando a posição da etiqueta quando o input está focado ou preenchido */
+      input:focus~label,
+      input:valid~label {
+        top: -5px;
+      }
+  
+      /* Estilizando a entrada de texto dentro da caixa de entrada */
+      .inputbox input {
+        width: 100%;
+        height: 50px;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1em;
+        padding: 0 35px 0 5px;
+        color: #fff;
+      }
+  
+      /* Estilizando o ícone dentro da caixa de entrada */
+      .inputbox ion-icon {
+        position: absolute;
+        right: 8px;
+        color: #fff;
+        font-size: 1.2em;
+        top: 20px;
+      }
+  
+      /* Estilizando a seção de "esqueci minha senha" */
+      .forget {
+        margin: -15px 0 15px;
+        font-size: 0.9em;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+      }
+  
+      /* Estilizando o elemento forget label input */
+      .forget label input {
+        margin-right: 3px;
+      }
+  
+      /* Estilizando o elemento forget label a 1 */
+      .forget label a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 60px;
+      }
+  
+      /* Estilizando o elemento forget label a quando hover */
+      .forget label a:hover {
+        text-decoration: underline;
+      }
+  
+      /* Estilizando o botão */
+      button {
+        width: 100%;
+        height: 40px;
+        border-radius: 40px;
+        background: #d80d0d;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 600; 
+      }
+  
+      /* Estilizando o elemento register */
+      .register {
+        font-size: 0.9em;
+        color: #fff;
+        text-align: center;
+        margin: 25px 0 10px;
+      }
+  
+      /* Estilizando o elemento register p a */
+      .register p a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: 600;
+      }
+  
+      /* Estilizando o elemento register p a quando hover */
+      .register p a:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+    <section>
+        <div class="form-box">
+            <div class="form-value">
+                <form method="post" action="index.php">
+                    <h2>Login</h2>
+                   
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="text" name="email" id="email" required>
+                        <label for="email">Email:</label>
+                   
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="text" name="senha" id="senha" required>
+                        <label for="senha">Senha:</label>
+                    
+      
+                    <button type="submit" > login </button>
+                    <a href="logout.php" class="register">Sair</a>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <?php
+    session_start(); // Inicie a sessão no início do arquivo PHP
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      // Configurações do banco de dados
+      $host = 'localhost';
+      $username = 'phpmyadmin';
+      $password = 'aluno';
+      $database = 'TutoCrudPhp';
+
+      // Conectar ao banco de dados
+      $conn = new mysqli($host, $username, $password, $database);
+
+      // Verificar a conexão
+      if ($conn->connect_error) {
+        die("Erro na conexão com o banco de dados: " . $conn->connect_error);
+      }
+
+      // Receber os dados do formulário
+      $email = $_POST['email'];
+      $senha = $_POST['senha'];
+
+      // Consultar o banco de dados para verificar as credenciais
+      $query = "SELECT * FROM Cliente WHERE email = '$email' AND senha = '$senha'";
+      $result = $conn->query($query);
+
+      if ($result->num_rows == 1) {
+        // Login bem-sucedido
+        echo "Login bem-sucedido!";
+        $_SESSION['email'] = $email;
+        header("Location: painel.php");
+        exit(); 
+      } else {
+        echo "Credenciais inválidas";
+      }
+
+      // Fechar a conexão com o banco de dados
+      $conn->close();
+    }
+    ?>
+</body>
+
+</html>
